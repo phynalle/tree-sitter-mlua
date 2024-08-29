@@ -50,10 +50,13 @@
   "tree-sitter": [
     {
       "scope": "source.mlua",
-      "injection-regex": "^mlua$"
+      "file-types": ["mlua"],
+      "injection-regex": "mlua",
+      "injections": "queries/injections.scm",
+      "highlights": "queries/highlights.scm"
     }
   ],
-  "author": "",
+  "author": "phynalle",
   "bugs": {
     "url": "https://github.com/tree-sitter/tree-sitter-mlua/issues"
   },

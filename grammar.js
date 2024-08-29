@@ -11,7 +11,7 @@ module.exports = grammar({
        $.identifier,
        optional(seq('extends', $.identifier)),
        repeat(choice($.property, $.constructor, $.method)),
-       'end'),
+       $.block_end),
 
     identifier: _ => /[a-zA-Z_]\w*/,
 
@@ -44,7 +44,7 @@ module.exports = grammar({
       'constructor',
       $.identifier,
       $.parameters,
-      $.block,
+      $.code_block,
     ),
 
     method: $ => seq(
@@ -54,19 +54,40 @@ module.exports = grammar({
       $.type_identifier,
       $.identifier,
       $.parameters,
-      $.block,
+      $.code_block,
     ),
+
+    code_block: $ => seq(
+      optional($.code),
+      $.block_end,
+    ),
+
+    code: $ => repeat1(choice(
+      $._lua_any_token,
+      $._lua_nested_structure
+    )),
+
+    block_end: _ => 'end',
+
+    _lua_nested_structure: $ => seq(
+      choice('if', 'function', 'do'),
+      repeat(choice($._lua_any_token, $._lua_nested_structure)),
+      'end'
+    ),
+
+    _lua_any_token: $ => token(prec(-1, /./)),
 
     parameters: $ => seq(
       '(',
-      sepBy(',', seq($.type_identifier, $.identifier)),
+      sepBy(',', $.parameter),
       optional(','),
       ')',
     ),
 
-    block: $ => seq(optional($.code), 'end'),
-
-    code: _ => /.+/,
+    parameter: $ => seq(
+      field('type', $.type_identifier),
+      field('name', $.identifier),
+    ),
 
     _expression: $ => choice($._literal, $.identifier),
 

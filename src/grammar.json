@@ -66,8 +66,8 @@
           }
         },
         {
-          "type": "STRING",
-          "value": "end"
+          "type": "SYMBOL",
+          "name": "block_end"
         }
       ]
     },
@@ -249,7 +249,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "block"
+          "name": "code_block"
         }
       ]
     },
@@ -298,9 +298,103 @@
         },
         {
           "type": "SYMBOL",
-          "name": "block"
+          "name": "code_block"
         }
       ]
+    },
+    "code_block": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "code"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "block_end"
+        }
+      ]
+    },
+    "code": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "_lua_any_token"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_lua_nested_structure"
+          }
+        ]
+      }
+    },
+    "block_end": {
+      "type": "STRING",
+      "value": "end"
+    },
+    "_lua_nested_structure": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "if"
+            },
+            {
+              "type": "STRING",
+              "value": "function"
+            },
+            {
+              "type": "STRING",
+              "value": "do"
+            }
+          ]
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_lua_any_token"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_lua_nested_structure"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "end"
+        }
+      ]
+    },
+    "_lua_any_token": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": -1,
+        "content": {
+          "type": "PATTERN",
+          "value": "."
+        }
+      }
     },
     "parameters": {
       "type": "SEQ",
@@ -316,17 +410,8 @@
               "type": "SEQ",
               "members": [
                 {
-                  "type": "SEQ",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "type_identifier"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "identifier"
-                    }
-                  ]
+                  "type": "SYMBOL",
+                  "name": "parameter"
                 },
                 {
                   "type": "REPEAT",
@@ -338,17 +423,8 @@
                         "value": ","
                       },
                       {
-                        "type": "SEQ",
-                        "members": [
-                          {
-                            "type": "SYMBOL",
-                            "name": "type_identifier"
-                          },
-                          {
-                            "type": "SYMBOL",
-                            "name": "identifier"
-                          }
-                        ]
+                        "type": "SYMBOL",
+                        "name": "parameter"
                       }
                     ]
                   }
@@ -378,30 +454,26 @@
         }
       ]
     },
-    "block": {
+    "parameter": {
       "type": "SEQ",
       "members": [
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "code"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
+          "type": "FIELD",
+          "name": "type",
+          "content": {
+            "type": "SYMBOL",
+            "name": "type_identifier"
+          }
         },
         {
-          "type": "STRING",
-          "value": "end"
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
         }
       ]
-    },
-    "code": {
-      "type": "PATTERN",
-      "value": ".+"
     },
     "_expression": {
       "type": "CHOICE",

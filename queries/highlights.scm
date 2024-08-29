@@ -7,6 +7,8 @@
   "method"
 ] @keyword
 
+(block_end) @keyword
+
 [
   (boolean_literal)
   (nil_literal)
@@ -23,10 +25,14 @@
 [
   "{"
   "}"
+  "("
+  ")"
 ] @punctuation.bracket
 
 (type_identifier) @type
 
-(annotation name: (identifier) @attribute)
-"@" @operator
+(annotation) @attribute
 
+(parameter
+  type: (type_identifier) @type
+  name: (identifier) @variable.parameter)
